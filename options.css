@@ -1,0 +1,83 @@
+body.options { width: auto; padding: 0; background: #f6efe4; }
+.wrap { max-width: 560px; margin: 0 auto; padding: 26px 20px 48px; }
+.section {
+  font-size: 13px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em;
+  color: #8a5a00; margin: 22px 4px 8px;
+}
+body.options .panel { padding: 6px 16px; }
+body.options input[type="text"], body.options input[type="password"] { min-width: 200px; }
+body.options .saved { position: sticky; bottom: 10px; }
+
+.local-only, .anthropic-only, .needs-key { display: none; }
+body.prov-local .local-only { display: flex; }
+body.prov-local p.local-only { display: block; }
+body.prov-hybrid .local-only { display: flex; }
+body.prov-hybrid p.local-only { display: block; }
+body.prov-anthropic .needs-key, body.prov-hybrid .needs-key { display: flex; }
+body.prov-anthropic p.needs-key, body.prov-hybrid p.needs-key { display: block; }
+#localStatus { font-weight: 700; color: var(--muted); }
+
+/* ---- premium: show the on-device row too (warm-ups still run locally) ---- */
+body.prov-premium .local-only { display: flex; }
+body.prov-premium p.local-only { display: block; }
+body.prov-premium .premium-only { display: flex; }
+body.prov-premium p.premium-only { display: block; }
+.premium-only { display: none; }
+
+/* Status pills */
+#premiumStatus.on { color: var(--mint); font-weight: 900; }
+#premiumStatus.off { color: #a99b86; }
+
+/* ---- premium walkthrough modal ---- */
+.pm-modal {
+  position: fixed; inset: 0; z-index: 100000;
+  background: rgba(28, 20, 60, 0.55);
+  display: grid; place-items: center;
+  padding: 20px;
+}
+.pm-modal[hidden] { display: none; }
+.pm-box {
+  width: min(520px, 100%);
+  background: #fff8f0;
+  border-radius: 20px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+  overflow: hidden;
+  animation: pm-in 200ms ease-out;
+}
+@keyframes pm-in { from { transform: translateY(14px); opacity: 0; } to { transform: none; opacity: 1; } }
+.pm-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 18px;
+  background: linear-gradient(160deg, #6d4aa8, #4c2a85);
+  color: #fff8f0;
+}
+.pm-title { font-weight: 900; font-size: 17px; }
+.pm-x {
+  background: rgba(255,255,255,0.18); border: none; color: #fff;
+  width: 30px; height: 30px; border-radius: 8px; cursor: pointer; font-size: 15px;
+}
+.pm-step { padding: 20px 22px 22px; color: var(--ink); }
+.pm-step h3 { margin: 4px 0 10px; font-weight: 900; font-size: 18px; }
+.pm-step p { font-size: 14px; font-weight: 700; line-height: 1.45; margin: 0 0 12px; }
+.pm-step ol { padding-left: 20px; margin: 6px 0 14px; font-size: 14px; font-weight: 700; }
+.pm-step ol li { margin-bottom: 6px; }
+.pm-step a { color: var(--grape-hi); font-weight: 900; }
+.pm-step code {
+  background: #ede2cd; padding: 1px 6px; border-radius: 5px;
+  font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12.5px;
+}
+.pm-num {
+  display: inline-grid; place-items: center;
+  width: 30px; height: 30px; border-radius: 50%;
+  background: #ffc24b; color: #5a3b00; font-weight: 900;
+  margin-bottom: 6px;
+}
+.pm-small { color: var(--muted); font-weight: 700; font-size: 12.5px; }
+.pm-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px; }
+.pm-key { display: block; margin: 8px 0 6px; }
+.pm-key span { display: block; font-size: 12px; font-weight: 900; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.pm-key input { width: 100%; padding: 10px 12px; border: 2px solid var(--line); border-radius: 10px; font: inherit; font-weight: 600; }
+.pm-key input:focus { outline: 3px solid var(--grape-hi); }
+.pm-test { min-height: 22px; font-size: 13px; font-weight: 800; margin: 6px 0 0; }
+.pm-test.ok { color: var(--mint); }
+.pm-test.err { color: #c02c3d; }

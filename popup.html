@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header class="head">
+    <span class="mark">🌱</span>
+    <div>
+      <h1>Sprout</h1>
+      <p class="tag">Learn a little to keep watching</p>
+    </div>
+  </header>
+
+  <div class="panel">
+    <label class="row switch-row">
+      <span>Sprout turned on</span>
+      <input type="checkbox" id="enabled" />
+      <span class="switch" aria-hidden="true"></span>
+    </label>
+    <label class="row">
+      <span>Child's age</span>
+      <select id="age"></select>
+    </label>
+    <label class="row">
+      <span>When to ask</span>
+      <select id="gateTiming">
+        <option value="smart">Smart — warm-up at start + check at the teaching moment</option>
+        <option value="start">Only a warm-up question at the start</option>
+        <option value="moments">Only a check at the teaching moment</option>
+      </select>
+    </label>
+  </div>
+
+  <button class="btn primary" id="openSettings" type="button">Open full settings</button>
+  <p class="foot"><a href="#" id="openPremium">⭐ Set up Sprout Premium</a></p>
+  <p class="saved" id="saved">Saved ✓</p>
+  <p class="foot">Works on youtube.com. Answer a question — or use your PIN — to play.</p>
+
+  <script src="popup.js"></script>
+</body>
+</html>

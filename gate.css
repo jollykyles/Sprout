@@ -1,0 +1,321 @@
+/* gate.css — styles for the full-screen learning gate.
+   All selectors namespaced under #sprout-gate so we never collide with YouTube. */
+
+#sprout-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647; /* above everything YouTube renders */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+  background:
+    radial-gradient(120% 120% at 50% 0%, #6d4aa8 0%, #4c2a85 55%, #35205f 100%);
+  font-family: "Nunito", "Segoe UI", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  animation: sprout-fade 220ms ease-out;
+}
+
+@keyframes sprout-fade { from { opacity: 0; } to { opacity: 1; } }
+
+#sprout-gate * { box-sizing: border-box; }
+
+#sprout-gate .sprout-card {
+  width: min(560px, 100%);
+  background: #fff8f0;
+  border-radius: 28px;
+  padding: 34px 30px 30px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45), 0 0 0 6px rgba(255, 194, 75, 0.25);
+  text-align: center;
+  animation: sprout-pop 320ms cubic-bezier(0.2, 0.9, 0.3, 1.3);
+}
+
+@keyframes sprout-pop {
+  from { transform: scale(0.85) translateY(14px); opacity: 0; }
+  to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+#sprout-gate .sprout-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #8a5a00;
+  background: #ffe6ad;
+  padding: 6px 14px;
+  border-radius: 999px;
+  margin-bottom: 18px;
+}
+
+#sprout-gate .sprout-topic {
+  font-size: 14px;
+  font-weight: 700;
+  color: #7a6a55;
+  margin: 0 0 6px;
+}
+
+#sprout-gate .sprout-question {
+  font-size: 27px;
+  line-height: 1.25;
+  font-weight: 800;
+  color: #2c1e4a;
+  margin: 0 0 24px;
+}
+
+#sprout-gate .sprout-choices {
+  display: grid;
+  gap: 12px;
+}
+
+#sprout-gate .sprout-choice {
+  appearance: none;
+  border: 3px solid #e7dcc9;
+  background: #ffffff;
+  color: #2c1e4a;
+  font-family: inherit;
+  font-size: 21px;
+  font-weight: 800;
+  padding: 16px 18px;
+  border-radius: 18px;
+  cursor: pointer;
+  transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+
+#sprout-gate .sprout-choice:hover { transform: translateY(-2px); border-color: #6d4aa8; }
+#sprout-gate .sprout-choice:focus-visible { outline: 4px solid #6d4aa8; outline-offset: 2px; }
+#sprout-gate .sprout-choice:active { transform: translateY(0) scale(0.98); }
+
+#sprout-gate .sprout-choice.is-correct {
+  border-color: #21a35a;
+  background: #d6f7e2;
+  color: #0f6b38;
+}
+#sprout-gate .sprout-choice.is-wrong {
+  border-color: #e05a6b;
+  background: #ffe1e5;
+  color: #a11d2e;
+  animation: sprout-shake 320ms;
+}
+
+@keyframes sprout-shake {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-7px); }
+  75% { transform: translateX(7px); }
+}
+
+#sprout-gate .sprout-feedback {
+  min-height: 26px;
+  margin-top: 18px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #21a35a;
+}
+#sprout-gate .sprout-feedback.is-wrong { color: #c02c3d; }
+
+#sprout-gate .sprout-loading {
+  font-size: 19px;
+  font-weight: 800;
+  color: #6d4aa8;
+  padding: 30px 0;
+}
+#sprout-gate .sprout-spinner {
+  width: 34px; height: 34px; margin: 0 auto 16px;
+  border: 5px solid #e7dcc9;
+  border-top-color: #6d4aa8;
+  border-radius: 50%;
+  animation: sprout-spin 800ms linear infinite;
+}
+@keyframes sprout-spin { to { transform: rotate(360deg); } }
+
+#sprout-gate .sprout-grownup {
+  margin-top: 22px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #a99b86;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+#sprout-gate .sprout-grownup:hover { color: #6d4aa8; }
+
+/* confetti bits */
+#sprout-gate .sprout-confetti {
+  position: fixed;
+  top: -12px;
+  width: 11px; height: 16px;
+  border-radius: 3px;
+  pointer-events: none;
+  animation: sprout-fall linear forwards;
+}
+@keyframes sprout-fall {
+  to { transform: translateY(105vh) rotate(540deg); opacity: 0.9; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #sprout-gate, #sprout-gate .sprout-card, #sprout-gate .sprout-choice,
+  #sprout-gate .sprout-choice.is-wrong, #sprout-gate .sprout-spinner,
+  #sprout-gate .sprout-confetti {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---- age picker grid ---- */
+#sprout-gate .sprout-ages {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* ---- Sprout frame wrapping YouTube ---- */
+#sprout-frame {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000; /* below the gate, above the page */
+  pointer-events: none;
+  box-sizing: border-box;
+  border: 9px solid #4c2a85;
+  border-image: linear-gradient(160deg, #6d4aa8, #4c2a85 55%, #35205f) 1;
+  box-shadow: inset 0 0 0 2px rgba(255, 194, 75, 0.35);
+}
+#sprout-frame.sprout-fs { display: none; } /* don't cover fullscreen video */
+
+#sprout-frame .sprout-frame-tab {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px 7px;
+  border-radius: 12px 12px 0 0;
+  background: linear-gradient(180deg, #5a389a, #4c2a85);
+  color: #fff8f0;
+  font-family: "Nunito", "Segoe UI", -apple-system, system-ui, sans-serif;
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  box-shadow: 0 -3px 12px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+}
+#sprout-frame .sprout-frame-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #4ade80;
+  animation: sprout-pulse 2s infinite;
+}
+@keyframes sprout-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.6); }
+  70% { box-shadow: 0 0 0 7px rgba(74, 222, 128, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #sprout-frame .sprout-frame-dot { animation: none; }
+}
+
+/* ---- hide Shorts entry points when blocked ---- */
+html.sprout-hide-shorts ytd-reel-shelf-renderer,
+html.sprout-hide-shorts ytd-rich-shelf-renderer[is-shorts],
+html.sprout-hide-shorts ytd-guide-entry-renderer:has(a[title="Shorts"]),
+html.sprout-hide-shorts ytd-mini-guide-entry-renderer[aria-label="Shorts"],
+html.sprout-hide-shorts a[title="Shorts"] {
+  display: none !important;
+}
+
+/* cooldown / "break" state on the frame dot */
+#sprout-frame .sprout-frame-dot.sprout-dot-rest {
+  background: #ffc24b;
+  animation: none;
+}
+
+/* ---- read-aloud ---- */
+#sprout-gate .sprout-q-row { display: flex; align-items: flex-start; gap: 10px; }
+#sprout-gate .sprout-speak {
+  flex: none;
+  border: 2px solid #e7dcc9;
+  background: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  display: grid;
+  place-items: center;
+}
+#sprout-gate .sprout-speak-q { width: 40px; height: 40px; font-size: 18px; margin-top: 2px; }
+#sprout-gate .sprout-speak:hover { border-color: #6d4aa8; transform: translateY(-1px); }
+#sprout-gate .sprout-speak:active { transform: scale(0.94); }
+#sprout-gate .sprout-w { border-radius: 5px; padding: 0 1px; transition: background 90ms, color 90ms; }
+#sprout-gate .sprout-w-on { background: #ffc24b; color: #2c1e4a; }
+
+#sprout-gate .sprout-choice-row { display: flex; align-items: stretch; gap: 8px; }
+#sprout-gate .sprout-choice-row .sprout-choice { flex: 1; }
+#sprout-gate .sprout-speak-choice { width: 44px; font-size: 16px; }
+
+/* ---- review button + sidebar ---- */
+#sprout-review-btn {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2147483200;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(160deg, #6d4aa8, #4c2a85);
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+#sprout-review-btn:hover { filter: brightness(1.08); }
+
+#sprout-review {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: min(380px, 90vw);
+  z-index: 2147483400;
+  background: #fff8f0;
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  font-family: "Nunito", "Segoe UI", -apple-system, system-ui, sans-serif;
+  color: #2c1e4a;
+  animation: sprout-slide-in 220ms ease-out;
+}
+@keyframes sprout-slide-in { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+#sprout-review .sr-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 18px; background: linear-gradient(160deg, #6d4aa8, #4c2a85); color: #fff8f0;
+}
+#sprout-review .sr-title { font-weight: 900; font-size: 17px; }
+#sprout-review .sr-x { background: rgba(255,255,255,0.18); border: none; color: #fff; width: 30px; height: 30px; border-radius: 8px; cursor: pointer; font-size: 15px; }
+#sprout-review .sr-daynav { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 12px; font-weight: 800; border-bottom: 2px solid #ece2d3; }
+#sprout-review .sr-daynav button { border: 2px solid #e7dcc9; background: #fff; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: 900; }
+#sprout-review .sr-summary { text-align: center; font-weight: 800; color: #7a6a55; padding: 10px; }
+#sprout-review .sr-list { flex: 1; overflow-y: auto; padding: 8px 14px 14px; }
+#sprout-review .sr-empty { text-align: center; color: #a99b86; font-weight: 700; margin-top: 30px; }
+#sprout-review .sr-item { border-left: 5px solid #21a35a; background: #fff; border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+#sprout-review .sr-item.no { border-left-color: #e05a6b; }
+#sprout-review .sr-q { font-weight: 800; font-size: 14px; margin-bottom: 4px; }
+#sprout-review .sr-a { font-size: 13px; font-weight: 700; color: #4a3d63; }
+#sprout-review .sr-meta { font-size: 11.5px; font-weight: 700; color: #a99b86; margin-top: 3px; }
+#sprout-review .sr-export { margin: 12px 14px 16px; padding: 11px; border: none; border-radius: 12px; background: #ffc24b; color: #5a3b00; font-weight: 900; font-family: inherit; cursor: pointer; }
+#sprout-review .sr-export:hover { filter: brightness(1.05); }
+
+/* premium nudge toast */
+#sprout-nudge {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: 76px; z-index: 2147483300;
+  display: flex; align-items: center; gap: 14px;
+  background: #35205f; color: #fff8f0;
+  padding: 10px 14px; border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  font-family: "Nunito", "Segoe UI", -apple-system, system-ui, sans-serif;
+  font-size: 13.5px; font-weight: 800;
+  max-width: 92vw;
+}
+#sprout-nudge .sn-x { background: rgba(255,255,255,0.14); border: none; color: #fff; width: 26px; height: 26px; border-radius: 8px; cursor: pointer; margin-right: 6px; }
+#sprout-nudge .sn-cta { background: #ffc24b; color: #5a3b00; border: none; padding: 8px 12px; border-radius: 10px; font-family: inherit; font-weight: 900; cursor: pointer; }
+#sprout-nudge .sn-cta:hover { filter: brightness(1.05); }

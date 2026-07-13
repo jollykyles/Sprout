@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="popup.css" />
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body class="options">
+  <div class="wrap">
+    <header class="head">
+      <span class="mark">🌱</span>
+      <div>
+        <h1>Sprout settings</h1>
+        <p class="tag">Parent controls</p>
+      </div>
+    </header>
+
+    <h2 class="section">Child</h2>
+    <div class="panel">
+      <label class="row">
+        <span>Child's name <small>(shown on the Sprout frame)</small></span>
+        <input type="text" id="childName" maxlength="20" placeholder="optional" />
+      </label>
+      <label class="row">
+        <span>Age <small>(sets question difficulty)</small></span>
+        <select id="age"></select>
+      </label>
+    </div>
+
+    <h2 class="section">Learning</h2>
+    <div class="panel">
+      <label class="row switch-row">
+        <span>Sprout turned on</span>
+        <input type="checkbox" id="enabled" /><span class="switch" aria-hidden="true"></span>
+      </label>
+      <label class="row">
+        <span>When to ask</span>
+        <select id="gateTiming">
+          <option value="smart">Smart — warm-up at start + check at the teaching moment</option>
+          <option value="start">Only a warm-up question at the start</option>
+          <option value="moments">Only a check at the teaching moment</option>
+        </select>
+      </label>
+      <label class="row">
+        <span>Questions during each video</span>
+        <select id="questionsPerVideo"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+      </label>
+      <p class="note">The "teaching moment" check needs the question engine set to AI below — Sprout reads the transcript, finds where something was just taught, and quizzes there.</p>
+      <label class="row switch-row">
+        <span>Read questions aloud automatically <small>(with word highlighting)</small></span>
+        <input type="checkbox" id="readAloud" /><span class="switch" aria-hidden="true"></span>
+      </label>
+      <label class="row">
+        <span>Parent PIN <small>(to skip or unblock)</small></span>
+        <input type="text" id="pin" inputmode="numeric" maxlength="8" />
+      </label>
+    </div>
+
+    <h2 class="section">Allowed content</h2>
+    <div class="panel">
+      <label class="row switch-row">
+        <span>Block Shorts</span>
+        <input type="checkbox" id="blockShorts" /><span class="switch" aria-hidden="true"></span>
+      </label>
+      <label class="row switch-row">
+        <span>Block live streams</span>
+        <input type="checkbox" id="blockLive" /><span class="switch" aria-hidden="true"></span>
+      </label>
+      <label class="row switch-row">
+        <span>Block videos not marked family-safe <small>(YouTube's own flag; not perfect)</small></span>
+        <input type="checkbox" id="blockNonKid" /><span class="switch" aria-hidden="true"></span>
+      </label>
+    </div>
+
+    <h2 class="section">Question engine</h2>
+    <div class="panel">
+      <label class="row">
+        <span>Where questions come from</span>
+        <select id="aiProvider">
+          <option value="off">Built-in bank (no AI)</option>
+          <option value="local">On-device AI — free, private, warm-ups only</option>
+          <option value="premium">Premium — on-device warm-ups + video comprehension ⭐</option>
+        </select>
+      </label>
+      <div class="row local-only">
+        <span>On-device model <small id="localStatus">checking…</small></span>
+        <button class="btn" id="localSetup" type="button" style="display:none">Download</button>
+      </div>
+      <p class="note local-only">Runs Chrome's built-in model on this computer — nothing leaves the browser, no key. Needs Chrome on a laptop/desktop and a one-time ~4&nbsp;GB download; not available on phones or tablets. If it's not supported, Sprout uses the built-in bank.</p>
+
+      <div class="row premium-only">
+        <span>Premium status <small id="premiumStatus">not set up</small></span>
+        <button class="btn primary" id="premiumSetup" type="button">Set up premium</button>
+      </div>
+      <p class="note premium-only">Premium unlocks <b>real questions about the video your child just watched</b> (e.g. Mark Rober explains how a rocket works → Sprout asks about it). On-device AI can't do this reliably — the small model on your computer hallucinates on video transcripts, which is why comprehension questions use Anthropic's Claude Haiku instead. Only the transcript for that one question is sent, only at pause points. Cost is roughly $0.003 per question — pennies per week.</p>
+    </div>
+
+    <input type="hidden" id="apiKey" />
+
+    <div id="premiumModal" class="pm-modal" hidden>
+      <div class="pm-box" role="dialog" aria-modal="true" aria-labelledby="pmTitle">
+        <div class="pm-head">
+          <div class="pm-title" id="pmTitle">⭐ Set up Sprout Premium</div>
+          <button class="pm-x" id="pmClose" aria-label="Close">✕</button>
+        </div>
+
+        <div class="pm-step" data-step="1">
+          <div class="pm-num">1</div>
+          <h3>What premium gets you</h3>
+          <p>Questions about the video your child <b>just watched</b> — real comprehension. The built-in small AI can't do this reliably; premium uses Anthropic's Claude Haiku instead.</p>
+          <p class="pm-small">Cost: about $0.003 per video question. At 5 videos a day with 2 questions each, that's roughly <b>$0.90/month</b>. You pay Anthropic directly — Sprout takes nothing.</p>
+          <div class="pm-actions"><button class="btn primary" data-goto="2">Continue</button></div>
+        </div>
+
+        <div class="pm-step" data-step="2" hidden>
+          <div class="pm-num">2</div>
+          <h3>Create an Anthropic account</h3>
+          <ol>
+            <li>Go to <a href="https://console.anthropic.com/" target="_blank" rel="noopener">console.anthropic.com</a> and sign up (email is fine).</li>
+            <li>Verify your email if asked.</li>
+          </ol>
+          <div class="pm-actions">
+            <button class="btn" data-goto="1">Back</button>
+            <button class="btn primary" data-goto="3">I'm signed in</button>
+          </div>
+        </div>
+
+        <div class="pm-step" data-step="3" hidden>
+          <div class="pm-num">3</div>
+          <h3>Add a small amount of credit</h3>
+          <ol>
+            <li>In the Anthropic console, open <b>Billing</b> (usually under Settings).</li>
+            <li>Add a card and buy <b>$5</b> in credit — that lasts a typical family for months.</li>
+          </ol>
+          <p class="pm-small">You'll only get charged for the questions Sprout asks. Set a monthly spend limit in the console if you want a hard cap.</p>
+          <div class="pm-actions">
+            <button class="btn" data-goto="2">Back</button>
+            <button class="btn primary" data-goto="4">Credit added</button>
+          </div>
+        </div>
+
+        <div class="pm-step" data-step="4" hidden>
+          <div class="pm-num">4</div>
+          <h3>Create an API key</h3>
+          <ol>
+            <li>In the Anthropic console, open <b>API Keys</b>.</li>
+            <li>Click <b>Create Key</b>. Name it <code>Sprout</code>.</li>
+            <li>Copy the key — it starts with <code>sk-ant-</code>. You'll only see it once.</li>
+          </ol>
+          <div class="pm-actions">
+            <button class="btn" data-goto="3">Back</button>
+            <button class="btn primary" data-goto="5">Key copied</button>
+          </div>
+        </div>
+
+        <div class="pm-step" data-step="5" hidden>
+          <div class="pm-num">5</div>
+          <h3>Paste your key into Sprout</h3>
+          <p>The key is saved only on this computer, in the extension's local storage. It never leaves your browser except to talk to Anthropic.</p>
+          <label class="pm-key">
+            <span>Anthropic API key</span>
+            <input type="password" id="pmKeyInput" placeholder="sk-ant-..." autocomplete="off" spellcheck="false" />
+          </label>
+          <p class="pm-test" id="pmTest"></p>
+          <div class="pm-actions">
+            <button class="btn" data-goto="4">Back</button>
+            <button class="btn primary" id="pmActivate">Save &amp; test</button>
+          </div>
+        </div>
+
+        <div class="pm-step" data-step="6" hidden>
+          <div class="pm-num">✓</div>
+          <h3>Premium is on 🎉</h3>
+          <p>Sprout will now ask comprehension questions about the video your child watched. Everything else stays on-device.</p>
+          <div class="pm-actions"><button class="btn primary" id="pmDone">Done</button></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="saved" id="saved">Saved ✓</p>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>
